@@ -1,0 +1,19 @@
+<h2>Select Images for Collage</h2>
+<form method="POST">
+    {% csrf_token %}
+    <div style="display: flex; flex-wrap: wrap;">
+        {% for img in images %}
+            <label style="margin:10px;">
+                <input type="checkbox" name="selected_images" value="{{ img.id }}">
+                <img src="{{ img.image.url }}" width="100" height="100">
+            </label>
+        {% endfor %}
+    </div>
+
+    <label>Select Collage Type:</label><br>
+    <input type="radio" name="collage_type" value="2" required> 2 Pics<br>
+    <input type="radio" name="collage_type" value="3"> 3 Pics<br>
+    <input type="radio" name="collage_type" value="4"> 4 Pics<br>
+
+    <button type="submit">Create Collage</button>
+</form>

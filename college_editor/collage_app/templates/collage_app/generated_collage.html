@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Collage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    #collage-box {
+      background: white;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      max-width: 800px;
+      margin: auto;
+    }
+
+    #collage-box img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .download-btn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .download-btn:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Your Collage ({{ collage_type }} pics)</h2>
+
+  <div id="collage-box">
+    {% for img in selected_images %}
+      <img src="{{ img.image.url }}" alt="collage-image">
+    {% endfor %}
+  </div>
+
+  <button class="download-btn" onclick="downloadCollage()">Download Collage</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    function downloadCollage() {
+     const collageElement = document.getElementById('collage-box');
+     const images = collageElement.getElementsByTagName('img');
+     let loaded = 0;
+
+    // Wait for all images to load
+     for (let i = 0; i < images.length; i++) {
+      if (images[i].complete) {
+        loaded++;
+      } else {
+        images[i].addEventListener('load', () => {
+          loaded++;
+          if (loaded === images.length) takeScreenshot();
+        });
+      }
+    }
+
+    if (loaded === images.length) {
+      takeScreenshot();
+    }
+
+    function takeScreenshot() {
+      html2canvas(collageElement).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'collage.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  }
+  </script>
+
+</body>
+</html>

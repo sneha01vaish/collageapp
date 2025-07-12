@@ -1,0 +1,18 @@
+<h2>{{ collage.title }}</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;">
+    {% for image in collage.images.all %}
+        <img src="{{ image.image.url }}" style="width: 100%;">
+    {% endfor %}
+</div>
+<button onclick="downloadCollage()">Download Collage</button>
+<script>
+    function downloadCollage() {
+        html2canvas(document.querySelector('div')).then(canvas => {
+            let link = document.createElement('a');
+            link.download = '{{ collage.title }}.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
