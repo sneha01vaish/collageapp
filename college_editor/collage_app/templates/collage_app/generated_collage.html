@@ -1,55 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Your Collage</title>
+  <meta charset="UTF-8" />
+  <title>Your Collage ({{ collage_type }} pics)</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f2f2f2;
+      background-color: #f9f9f9;
       margin: 0;
-      padding: 20px;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
     }
-
     h2 {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      color: #333;
+      font-weight: 700;
+      font-size: 2rem;
     }
 
+    /* Collage container */
     #collage-box {
       background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      max-width: 720px;
+      width: 100%;
       display: flex;
-      flex-wrap: wrap;
       gap: 10px;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    /* Layout for 2 images */
+    #collage-box.two {
+      flex-direction: row;
       justify-content: center;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      max-width: 800px;
-      margin: auto;
     }
-
-    #collage-box img {
-      width: 200px;
-      height: 200px;
+    #collage-box.two img {
+      width: calc(50% - 5px);
+      height: 300px;
+      border-radius: 12px;
       object-fit: cover;
-      border-radius: 8px;
     }
 
+    /* Layout for 3 images */
+    #collage-box.three {
+      flex-direction: row;
+      height: 320px;
+    }
+    #collage-box.three .left-big {
+      flex: 1.5;
+      margin-right: 10px;
+    }
+    #collage-box.three .left-big img {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+    #collage-box.three .right-stack {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #collage-box.three .right-stack img {
+      width: 100%;
+      height: calc(50% - 5px);
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    /* Layout for 4 images */
+    #collage-box.four {
+      flex-direction: row;
+      gap: 20px;
+      height: 320px;
+    }
+    #collage-box.four .column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #collage-box.four .column img {
+      width: 100%;
+      height: calc(50% - 5px);
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    /* Download button */
     .download-btn {
       margin-top: 30px;
-      padding: 10px 20px;
-      font-size: 16px;
+      padding: 14px 30px;
+      font-size: 18px;
       background-color: #3498db;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 5px 12px rgba(52, 152, 219, 0.5);
     }
-
     .download-btn:hover {
       background-color: #2980b9;
+    }
+
+    @media (max-width: 600px) {
+      #collage-box {
+        flex-direction: column !important;
+        height: auto !important;
+      }
+      #collage-box.two img,
+      #collage-box.three .left-big img,
+      #collage-box.three .right-stack img,
+      #collage-box.four .column img {
+        height: 200px !important;
+      }
+      #collage-box.three .right-stack {
+        flex-direction: row !important;
+        height: auto !important;
+      }
+      #collage-box.three .right-stack img {
+        width: calc(50% - 5px) !important;
+        height: 200px !important;
+      }
+      #collage-box.four {
+        flex-direction: column !important;
+        height: auto !important;
+      }
+      #collage-box.four .column {
+        flex-direction: row !important;
+        gap: 10px !important;
+      }
+      #collage-box.four .column img {
+        width: calc(50% - 5px) !important;
+        height: 200px !important;
+      }
     }
   </style>
 </head>
@@ -57,10 +148,29 @@
 
   <h2>Your Collage ({{ collage_type }} pics)</h2>
 
-  <div id="collage-box">
-    {% for img in selected_images %}
-      <img src="{{ img.image.url }}" alt="collage-image">
-    {% endfor %}
+  <div id="collage-box" class="{% if collage_type == '2' %}two{% elif collage_type == '3' %}three{% else %}four{% endif %}">
+    {% if collage_type == '2' %}
+      {% for img in selected_images %}
+        <img src="{{ img.image.url }}" alt="collage-image">
+      {% endfor %}
+    {% elif collage_type == '3' %}
+      <div class="left-big">
+        <img src="{{ selected_images.0.image.url }}" alt="collage-image">
+      </div>
+      <div class="right-stack">
+        <img src="{{ selected_images.1.image.url }}" alt="collage-image">
+        <img src="{{ selected_images.2.image.url }}" alt="collage-image">
+      </div>
+    {% else %}
+      <div class="column">
+        <img src="{{ selected_images.0.image.url }}" alt="collage-image">
+        <img src="{{ selected_images.1.image.url }}" alt="collage-image">
+      </div>
+      <div class="column">
+        <img src="{{ selected_images.2.image.url }}" alt="collage-image">
+        <img src="{{ selected_images.3.image.url }}" alt="collage-image">
+      </div>
+    {% endif %}
   </div>
 
   <button class="download-btn" onclick="downloadCollage()">Download Collage</button>
@@ -68,35 +178,35 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     function downloadCollage() {
-     const collageElement = document.getElementById('collage-box');
-     const images = collageElement.getElementsByTagName('img');
-     let loaded = 0;
+      const collageElement = document.getElementById('collage-box');
+      const images = collageElement.getElementsByTagName('img');
+      let loaded = 0;
 
-    // Wait for all images to load
-     for (let i = 0; i < images.length; i++) {
-      if (images[i].complete) {
-        loaded++;
-      } else {
-        images[i].addEventListener('load', () => {
+      // Wait for all images to load
+      for (let i = 0; i < images.length; i++) {
+        if (images[i].complete) {
           loaded++;
-          if (loaded === images.length) takeScreenshot();
+        } else {
+          images[i].addEventListener('load', () => {
+            loaded++;
+            if (loaded === images.length) takeScreenshot();
+          });
+        }
+      }
+
+      if (loaded === images.length) {
+        takeScreenshot();
+      }
+
+      function takeScreenshot() {
+        html2canvas(collageElement).then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'collage.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
         });
       }
     }
-
-    if (loaded === images.length) {
-      takeScreenshot();
-    }
-
-    function takeScreenshot() {
-      html2canvas(collageElement).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'collage.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      });
-    }
-  }
   </script>
 
 </body>
