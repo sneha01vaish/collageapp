@@ -67,5 +67,3 @@ Then open your browser and visit:
 
 ---
 
-## **📝 Note**
-This project is for demonstration and learning purposes. Feel free to enhance it by adding layout previews, drag-and-drop, or permanent saving of generated collages.
