@@ -1,19 +1,176 @@
-<h2>Select Images for Collage</h2>
-<form method="POST">
-    {% csrf_token %}
-    <div style="display: flex; flex-wrap: wrap;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Select Images for Collage</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      background: white;
+      max-width: 900px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      padding: 30px 40px;
+    }
+    h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #333;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* Error message */
+    .error-message {
+      background-color: #ffe6e6;
+      color: #b00020;
+      border: 1px solid #b00020;
+      padding: 15px;
+      margin-bottom: 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(176, 0, 32, 0.25);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    /* Images grid */
+    .images-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 18px;
+      justify-items: center;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+
+    input[type="checkbox"] {
+      margin-bottom: 8px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #3498db;
+      position: relative;
+      z-index: 2;
+    }
+
+    img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+      transition: transform 0.3s ease;
+    }
+    label:hover img {
+      transform: scale(1.05);
+      box-shadow: 0 8px 15px rgb(0 0 0 / 0.15);
+    }
+
+    /* Collage type radio buttons */
+    .collage-type {
+      display: flex;
+      justify-content: center;
+      gap: 35px;
+      font-size: 1.1rem;
+      color: #444;
+    }
+    .collage-type label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    input[type="radio"] {
+      cursor: pointer;
+      accent-color: #3498db;
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Submit button */
+    button[type="submit"] {
+      width: 250px;
+      align-self: center;
+      padding: 12px 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: white;
+      background-color: #3498db;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgb(52 152 219 / 0.5);
+      transition: background-color 0.3s ease;
+    }
+    button[type="submit"]:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Select Images for Collage</h2>
+
+    {% if error %}
+      <div class="error-message">
+        {{ error }}
+      </div>
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      
+      <div class="images-grid">
         {% for img in images %}
-            <label style="margin:10px;">
-                <input type="checkbox" name="selected_images" value="{{ img.id }}">
-                <img src="{{ img.image.url }}" width="100" height="100">
-            </label>
+          <label>
+            <input type="checkbox" name="selected_images" value="{{ img.id }}" 
+              {% if selected_ids and img.id in selected_ids %}checked{% endif %}>
+            <img src="{{ img.image.url }}" alt="Image {{ forloop.counter }}">
+          </label>
         {% endfor %}
-    </div>
+      </div>
 
-    <label>Select Collage Type:</label><br>
-    <input type="radio" name="collage_type" value="2" required> 2 Pics<br>
-    <input type="radio" name="collage_type" value="3"> 3 Pics<br>
-    <input type="radio" name="collage_type" value="4"> 4 Pics<br>
+      <div class="collage-type">
+        <label>
+          <input type="radio" name="collage_type" value="2" required
+          {% if selected_collage_type == '2' %}checked{% endif %}>
+          2 Pics
+        </label>
+        <label>
+          <input type="radio" name="collage_type" value="3"
+          {% if selected_collage_type == '3' %}checked{% endif %}>
+          3 Pics
+        </label>
+        <label>
+          <input type="radio" name="collage_type" value="4"
+          {% if selected_collage_type == '4' %}checked{% endif %}>
+          4 Pics
+        </label>
+      </div>
 
-    <button type="submit">Create Collage</button>
-</form>
+      <button type="submit">Create Collage</button>
+    </form>
+  </div>
+</body>
+</html>
