@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>No Images Uploaded</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8d7da;
+      color: #721c24;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    a {
+      text-decoration: none;
+      color: #721c24;
+      border: 2px solid #721c24;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    a:hover {
+      background-color: #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+  <h2>No Images Uploaded Yet</h2>
+  <p>Please upload images first before creating a collage.</p>
+  <a href="{% url 'upload_images' %}">Go to Upload Images</a>
+</body>
+</html>
 
