@@ -3,6 +3,9 @@ from .forms import CollageForm
 from .models import Collage, ImageItem
 from .models import UploadedImage
 
+def home(request):
+    return render(request, 'collage_app/home.html')
+
 def upload_images(request):
     if request.method == 'POST':
         for f in request.FILES.getlist('images'):
@@ -14,15 +17,42 @@ def upload_images(request):
 
 def select_images(request):
     images = UploadedImage.objects.all()
+    if not images.exists():
+        return render(request, 'collage_app/no_images.html')
+
+    error = None
+
     if request.method == 'POST':
         selected_ids = request.POST.getlist('selected_images')
-        selected_images = UploadedImage.objects.filter(id__in=selected_ids)
         collage_type = request.POST.get('collage_type')
+
+        # Convert collage_type to int safely
+        try:
+            collage_type_int = int(collage_type)
+        except (ValueError, TypeError):
+            error = "Please select a valid collage type."
+            collage_type_int = None
+
+        if collage_type_int and len(selected_ids) != collage_type_int:
+            error = f"You selected {len(selected_ids)} images but chose {collage_type_int} pics collage."
+
+        if error:
+            # Send back error message and previously selected values
+            return render(request, 'collage_app/select_images.html', {
+                'images': images,
+                'error': error,
+                'selected_ids': list(map(int, selected_ids)),
+                'selected_collage_type': collage_type,
+            })
+
+        selected_images = UploadedImage.objects.filter(id__in=selected_ids)
         return render(request, 'collage_app/generated_collage.html', {
             'selected_images': selected_images,
             'collage_type': collage_type
         })
+
     return render(request, 'collage_app/select_images.html', {'images': images})
+
 
 
 
